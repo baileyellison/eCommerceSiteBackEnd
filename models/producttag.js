@@ -1,24 +1,38 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
-  class ProductTag extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
+const { Model, DataTypes } = require('sequelize');
+const sequelize = require('../config/connection');
+
+class ProductTag extends Model {}
+
+ProductTag.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false
+    },
+    product_id: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'product', // refers to the 'product' model
+        key: 'id'
+      }
+    },
+    tag_id: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'tag', // refers to the 'tag' model
+        key: 'id'
+      }
     }
-  }
-  ProductTag.init({
-    product_id: DataTypes.INTEGER,
-    tag_id: DataTypes.INTEGER
-  }, {
+  },
+  {
     sequelize,
-    modelName: 'ProductTag',
-  });
-  return ProductTag;
-};
+    timestamps: false, // Disable timestamps
+    freezeTableName: true, // Use the same table name as the model name
+    underscored: true, // Use snake_case for automatically generated attributes
+    modelName: 'product_tag' // Define the model name
+  }
+);
+
+module.exports = ProductTag;
